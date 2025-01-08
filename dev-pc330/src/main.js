@@ -158,7 +158,6 @@ function main() {
 
       const conditionalItems = document.querySelectorAll('[data-flex-conditional]')
       const conditionalGreen = document.querySelector('[data-flex-conditional="green"]')
-      const conditionalOrange = document.querySelector('[data-flex-conditional="orange"]')
       const conditionalRed = document.querySelector('[data-flex-conditional="red"]')
       conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
 

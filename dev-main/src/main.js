@@ -129,39 +129,7 @@ function main() {
         }
       }
 
-      const monthlyLeasePriceNumber = r.leasePrice.monthlyLeasePrice * 1.21
-      document.querySelectorAll('[data-result="monthlyLeasePrice"]').forEach((monthlyLeasePrice) => (monthlyLeasePrice.innerText = monthlyLeasePriceNumber.toFixed(0)))
-      document.querySelector('[data-result="maintenanceCost"]').innerText = '€ ' + (r.leasePrice.maintenanceCost * 12 * 1.21).toFixed(0)
-      document.querySelector('[data-result="servicePackage"]').innerText = document.querySelector('input[name="yearlyMaintenanceFee"]:checked').getAttribute('data-label')
-      document.querySelector('[data-result="durationInMonths"]').innerText = document.querySelector('input[name="durationInMonths"]:checked').getAttribute('data-label').split(' ')[0]
-
-      // Bruto salaris - Gross Salary
-      // setValue('beforeLeaseSalary', '€' + r.beforeLeaseSalary.employerCosts.annualGrossSalary.toFixed(0))
-      // setValue('afterLeaseSalary', '€' + r.afterLeaseSalary.employerCosts.annualGrossSalary.toFixed(0))
-
-      // Sectoral
-      // setValue('beforeSectoral', '€' + r.beforeLeaseSalary.employerCosts.sectoralPremium.toFixed(0))
-      // setValue('afterSectoral', '€' + r.afterLeaseSalary.employerCosts.sectoralPremium.toFixed(0))
-
-      // Sociale zekerheid
-      setValue('beforeSocialSecurity', '- €' + Math.abs(r.beforeLeaseSalary.employerCosts.socialSecurityStructuralReduction.toFixed(0)))
-      setValue('afterSocialSecurity', '- €' + Math.abs(r.afterLeaseSalary.employerCosts.socialSecurityStructuralReduction.toFixed(0)))
-
-      // Holiday bonus
-      // setValue('beforeHolidayBonus', '€' + r.beforeLeaseSalary.employerCosts.holidayBonus.toFixed(0))
-      // setValue('afterHolidayBonus', '€' + r.afterLeaseSalary.employerCosts.holidayBonus.toFixed(0))
-
-      // Other Costs
-      setValue('beforeOtherExpenses', `- €${r.beforeLeaseSalary.employerCosts.otherExpenses.toFixed(0)}`)
-      setValue('afterOtherExpenses', `- €${r.afterLeaseSalary.employerCosts.otherExpenses.toFixed(0)}`)
-      /**
-       *
-       *
-       *
-       *
-       *
-       */
-
+      let monthlyLeasePriceNumber = r.leasePrice.monthlyLeasePrice * 1.21
       // Advantage
       const beforeEmployerCostTotal =
         r.beforeLeaseSalary.employerCosts.otherExpenses + r.beforeLeaseSalary.employerCosts.socialSecurityContributions + r.beforeLeaseSalary.employerCosts.socialSecurityStructuralReduction
@@ -170,19 +138,50 @@ function main() {
       let advantagePerMonthNumber = (beforeEmployerCostTotal - afterEmployerCostTotal) / 12
 
       if (financingMethod === 'BONUS') {
+        console.log('true')
         advantagePerMonthNumber = beforeEmployerCostTotal - afterEmployerCostTotal
         document.querySelectorAll('[data-bonus="show"]').forEach((el) => el.classList.remove('hide'))
         document.querySelectorAll('[data-bonus="hide"]').forEach((el) => el.classList.add('hide'))
+        monthlyLeasePriceNumber = monthlyLeasePriceNumber * 12
       }
 
-      setValue('advantage', advantagePerMonthNumber.toFixed(0), true)
-      setValue('recoup', (monthlyLeasePriceNumber - advantagePerMonthNumber).toFixed(0), true)
+      document.querySelectorAll('[data-result="monthlyLeasePrice"]').forEach((monthlyLeasePrice) => (monthlyLeasePrice.innerText = monthlyLeasePriceNumber.toFixed(0)))
+      document.querySelector('[data-result="maintenanceCost"]').innerText = '€ ' + (r.leasePrice.maintenanceCost * 12 * 1.21).toFixed(0)
+      document.querySelector('[data-result="servicePackage"]').innerText = document.querySelector('input[name="yearlyMaintenanceFee"]:checked').getAttribute('data-label')
+      document.querySelector('[data-result="durationInMonths"]').innerText = document.querySelector('input[name="durationInMonths"]:checked').getAttribute('data-label').split(' ')[0]
 
-      setValue('beforeEmployerTotal', `- €${beforeEmployerCostTotal.toFixed(0)}`)
-      setValue('afterEmployerTotal', `- €${afterEmployerCostTotal.toFixed(0)}`)
+      // Sociale zekerheid
+      setValue(
+        'beforeSocialSecurity',
+        Math.abs(r.beforeLeaseSalary.employerCosts.socialSecurityStructuralReduction.toFixed(0)) == 0
+          ? '€0'
+          : '- €' + Math.abs(r.beforeLeaseSalary.employerCosts.socialSecurityStructuralReduction.toFixed(0))
+      )
+      setValue(
+        'afterSocialSecurity',
+        Math.abs(r.afterLeaseSalary.employerCosts.socialSecurityStructuralReduction.toFixed(0)) == 0
+          ? '€0'
+          : '- €' + Math.abs(r.afterLeaseSalary.employerCosts.socialSecurityStructuralReduction.toFixed(0))
+      )
+
+      // Other Costs
+      setValue('beforeOtherExpenses', r.beforeLeaseSalary.employerCosts.otherExpenses.toFixed(0) == 0 ? '€0' : '- €' + r.beforeLeaseSalary.employerCosts.otherExpenses.toFixed(0))
+      setValue('afterOtherExpenses', r.afterLeaseSalary.employerCosts.otherExpenses.toFixed(0) == 0 ? '€0' : '- €' + r.afterLeaseSalary.employerCosts.otherExpenses.toFixed(0))
+      /**
+       *
+       *
+       *
+       *
+       *
+       */
+
+      setValue('advantage', advantagePerMonthNumber.toFixed(0), true)
+      setValue('recoup', monthlyLeasePriceNumber.toFixed(0) - advantagePerMonthNumber.toFixed(0), true)
+
+      setValue('beforeEmployerTotal', beforeEmployerCostTotal.toFixed(0) == 0 ? '€0' : `- €${beforeEmployerCostTotal.toFixed(0)}`)
+      setValue('afterEmployerTotal', afterEmployerCostTotal.toFixed(0) == 0 ? '€0' : `- €${afterEmployerCostTotal.toFixed(0)}`)
 
       setValue('savedTotalYearly', `€${(beforeEmployerCostTotal - afterEmployerCostTotal).toFixed(0)}`)
-      // setValue('savedTotalMonthly', `€${((beforeEmployerCostTotal - afterEmployerCostTotal) / 12).toFixed(0)}`)
 
       /**
        *
@@ -195,11 +194,17 @@ function main() {
       setValue('afterLeaseSalaryGross', '€' + r.afterLeaseSalary.grossSalary.toFixed(0))
 
       // RSZ
-      setValue('beforeSocialSecurityContributions', '- €' + r.beforeLeaseSalary.socialSecurityContributions.toFixed(0))
-      setValue('beforeSpecialSocialSecurityContributions', '- €' + r.beforeLeaseSalary.specialSocialSecurityContributions.toFixed(0))
+      setValue('beforeSocialSecurityContributions', r.beforeLeaseSalary.socialSecurityContributions.toFixed(0) == 0 ? '€0' : '- €' + r.beforeLeaseSalary.socialSecurityContributions.toFixed(0))
+      setValue(
+        'beforeSpecialSocialSecurityContributions',
+        r.beforeLeaseSalary.specialSocialSecurityContributions.toFixed(0) == 0 ? '€0' : '- €' + r.beforeLeaseSalary.specialSocialSecurityContributions.toFixed(0)
+      )
 
-      setValue('afterSocialSecurityContributions', '- €' + r.afterLeaseSalary.socialSecurityContributions.toFixed(0))
-      setValue('afterSpecialSocialSecurityContributions', '- €' + r.afterLeaseSalary.specialSocialSecurityContributions.toFixed(0))
+      setValue('afterSocialSecurityContributions', r.afterLeaseSalary.socialSecurityContributions.toFixed(0) == 0 ? '€0' : '- €' + r.afterLeaseSalary.socialSecurityContributions.toFixed(0))
+      setValue(
+        'afterSpecialSocialSecurityContributions',
+        r.afterLeaseSalary.specialSocialSecurityContributions.toFixed(0) == 0 ? '€0' : '- €' + r.afterLeaseSalary.specialSocialSecurityContributions.toFixed(0)
+      )
 
       // Workbonus
       setValue('beforeWorkBonus', '€' + r.beforeLeaseSalary.workBonus.toFixed(0))
@@ -210,8 +215,8 @@ function main() {
       setValue('afterTaxableIncome', '€' + r.afterLeaseSalary.taxableIncome.toFixed(0))
 
       // Income Tax
-      setValue('beforeIncomeTax', '- €' + r.beforeLeaseSalary.incomeTaxes.toFixed(0))
-      setValue('afterIncomeTax', '- €' + r.afterLeaseSalary.incomeTaxes.toFixed(0))
+      setValue('beforeIncomeTax', r.beforeLeaseSalary.incomeTaxes.toFixed(0) == 0 ? '€0' : '- €' + r.beforeLeaseSalary.incomeTaxes.toFixed(0))
+      setValue('afterIncomeTax', r.afterLeaseSalary.incomeTaxes.toFixed(0) == 0 ? '€0' : '- €' + r.afterLeaseSalary.incomeTaxes.toFixed(0))
 
       // Netto Salaris
       setValue('beforeLeaseSalaryNet', '€' + r.beforeLeaseSalary.monthlyNetSalary.toFixed(0))
