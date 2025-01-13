@@ -218,10 +218,6 @@ function main() {
       setValue('beforeIncomeTax', r.beforeLeaseSalary.incomeTaxes.toFixed(0) == 0 ? '€0' : '- €' + r.beforeLeaseSalary.incomeTaxes.toFixed(0))
       setValue('afterIncomeTax', r.afterLeaseSalary.incomeTaxes.toFixed(0) == 0 ? '€0' : '- €' + r.afterLeaseSalary.incomeTaxes.toFixed(0))
 
-      // Netto Salaris
-      setValue('beforeLeaseSalaryNet', '€' + r.beforeLeaseSalary.monthlyNetSalary.toFixed(0))
-      setValue('afterLeaseSalaryNet', '€' + r.afterLeaseSalary.monthlyNetSalary.toFixed(0))
-
       // Leaseprijs per maand/jaar
       setValue('monthlyNet', '€' + Math.abs(r.diffs.monthlyNet.toFixed(2)))
       // setValue('annualNet', '€' + Math.abs(r.diffs.annualNet.toFixed(2)))
