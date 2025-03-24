@@ -70,7 +70,7 @@ function main() {
     let flexBudget = parseFloat(document.querySelector('#grossYearEndPremium').value)
     let grossYearlySalary = parseFloat(document.querySelector('#grossYearlySalary').value)
     let grossYearEndPremium = parseFloat(document.querySelector('#grossYearEndPremium').value)
-    let durationInMonths = parseInt(document.querySelector('#durationInMonths').value)
+    // let durationInMonths = parseInt(document.querySelector('#durationInMonths').value)
     let flexPeriod = parseInt(document.querySelector('input[name="flexPeriod"]:checked').value)
     let employmentStatus = document.querySelector('input[name="employmentStatus"]:checked').getAttribute('data-label')
     let bikeLease = document.querySelector('#bikeLease').value
@@ -120,15 +120,17 @@ function main() {
       })
 
       const setValue = (el, resultText, multiple) => {
-        if (multiple) {
-          const thisEl = document.querySelectorAll(`[data-result="${el}"`)
+        if (el) {
+          if (multiple) {
+            const thisEl = document.querySelectorAll(`[data-result="${el}"`)
 
-          thisEl.forEach((element) => (element.innerText = `${element.hasAttribute('data-prefix') ? '€' + resultText : resultText}`))
-        } else {
-          const thisEl = document.querySelector(`[data-result="${el}"`)
+            thisEl.forEach((element) => (element.innerText = `${element.hasAttribute('data-prefix') ? '€' + resultText : resultText}`))
+          } else {
+            const thisEl = document.querySelector(`[data-result="${el}"`)
 
-          if (thisEl) {
-            thisEl.innerText = `${thisEl.hasAttribute('data-prefix') ? '€' + resultText : resultText}`
+            if (thisEl) {
+              thisEl.innerText = `${thisEl.hasAttribute('data-prefix') ? '€' + resultText : resultText}`
+            }
           }
         }
       }
@@ -142,9 +144,9 @@ function main() {
       }
 
       // Gross Year End Salary
-      setValue('flexBudget2025', '€' + bikeLease * durationInMonths)
+      // setValue('flexBudget2025', '€' + bikeLease * durationInMonths)
       setValue('flexBudget2026', '€' + bikeLease * 12)
-      setValue('orange', Math.abs(flexBudget - bikeLease * 12))
+      // setValue('orange', Math.abs(flexBudget - bikeLease * 12))
       setValue('red', Math.abs(flexBudget - bikeLease * 12))
 
       // grossYearEndPremium
@@ -174,19 +176,28 @@ function main() {
 
       const conditionalItems = document.querySelectorAll('[data-flex-conditional]')
       const conditionalGreen = document.querySelector('[data-flex-conditional="green"]')
-      const conditionalOrange = document.querySelector('[data-flex-conditional="orange"]')
+      // const conditionalOrange = document.querySelector('[data-flex-conditional="orange"]')
       const conditionalRed = document.querySelector('[data-flex-conditional="red"]')
       conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
+
+      // -------------------- old conditional --------------------
+      // if (bikeLease * 12 < flexBudget) {
+      //   conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
+      //   conditionalGreen.classList.remove('hide')
+      // } else if (bikeLease * durationInMonths >= flexBudget) {
+      //   conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
+      //   conditionalRed.classList.remove('hide')
+      // } else {
+      //   conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
+      //   conditionalOrange.classList.remove('hide')
+      // }
 
       if (bikeLease * 12 < flexBudget) {
         conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
         conditionalGreen.classList.remove('hide')
-      } else if (bikeLease * durationInMonths >= flexBudget) {
-        conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
-        conditionalRed.classList.remove('hide')
       } else {
         conditionalItems.forEach((allItem) => allItem.classList.add('hide'))
-        conditionalOrange.classList.remove('hide')
+        conditionalRed.classList.remove('hide')
       }
 
       /**

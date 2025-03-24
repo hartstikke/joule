@@ -10,7 +10,7 @@ const TERM_PERCENTAGES = {
   36: 0.16,
   48: 0.16,
 }
-console.log('test')
+console.log('18 maart')
 
 let term = document.querySelector('input[name="durationInMonths"]:checked').value
 
