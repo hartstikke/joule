@@ -10,9 +10,14 @@ const TERM_PERCENTAGES = {
   36: 0.16,
   48: 0.16,
 }
-console.log('18 maart')
+console.log('6 juni 2025')
 
 let term = document.querySelector('input[name="durationInMonths"]:checked').value
+
+const bonusInputParent = document.querySelector('#bonus-input-parent')
+const yearEndInputParent = document.querySelector('#yearend-input-parent')
+// Add input listeners for financing method changes
+const financingInputs = document.querySelectorAll('input[name="financingMethod"]')
 
 const MIN_BIKE_PRICE = 605
 const VAT_RATE = 1.21
@@ -47,6 +52,7 @@ class CalculatorApp {
     this.bikeRetailPrice.addEventListener('blur', this.validateBikePrice.bind(this))
     this.initializeLinkedInputs()
     this.setupRadioChangeListener()
+    this.checkWhatInputIsClicked()
   }
 
   initializeLinkedInputs() {
@@ -101,13 +107,38 @@ class CalculatorApp {
     })
   }
 
+  checkWhatInputIsClicked() {
+    financingInputs.forEach((input) => {
+      input.addEventListener('change', (event) => {
+        const value = event.target.value
+        console.log(value)
+
+        if (value === 'BONUS') {
+          bonusInputParent.classList.remove('hide')
+          yearEndInputParent.classList.add('hide')
+        } else if (value === 'YEAR_END_PREMIUM') {
+          yearEndInputParent.classList.remove('hide')
+          bonusInputParent.classList.add('hide')
+        } else {
+          bonusInputParent.classList.add('hide')
+          yearEndInputParent.classList.add('hide')
+        }
+      })
+    })
+  }
+
   getFormData() {
     const activeStatute = document.querySelector('#statute-selector .w--tab-active')
     const selectedDuration = document.querySelector('input[name="durationInMonths"]:checked')
+    //console.log(document.querySelector('input[name="financingMethod"]:checked').value)
+
+    const activeFinancingMethode = document.querySelector('input[name="financingMethod"]:checked').value
 
     return {
       financingMethod: document.querySelector('input[name="financingMethod"]:checked').value,
       grossSalary: parseFloat(activeStatute.querySelector('#grossSalary').value),
+      grossYearEndPremium: activeFinancingMethode === 'YEAR_END_PREMIUM' ? parseFloat(document.querySelector('#grossYearEndPrime').value) : 0,
+      grossBonus: activeFinancingMethode === 'BONUS' ? parseFloat(document.querySelector('#grossBonus').value) : 0,
       workingRegimePercent: 1,
       civilStatus: document.querySelector('input[name="civilStatus"]:checked').value,
       workingSpouse: true,
@@ -191,7 +222,6 @@ class CalculatorApp {
     let recoupNumber
 
     // Update bonus-related elements visibility
-
     document.querySelectorAll('[data-bonus="hide"]').forEach((el) => el.classList.add('hide', data.financingMethod === 'BONUS'))
     document.querySelectorAll('[data-yearend="hide"]').forEach((el) => el.classList.add('hide', data.financingMethod === 'YEAR_END_PREMIUM'))
 
