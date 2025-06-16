@@ -1,5 +1,0 @@
-html:not([lang='nl']) [data-button-lang='nl'],
-html:not([lang='fr']) [data-button-lang='fr'],
-html:not([lang='en']) [data-button-lang='en'] {
-  display: none !important;
-}
